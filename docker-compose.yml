@@ -1,0 +1,25 @@
+services:
+  jornadamilhas.api:
+    image: ${DOCKER_REGISTRY-}jornadamilhasapi
+    build:
+      context: .
+      dockerfile: src/JornadaMilhas.API/Dockerfile
+    ports:
+      - '57398:8080'  # Mapeia a porta 8080 do container para 57398 na máquina local
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    hostname: 'sqlserver'
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: "DbServer123"
+    volumes:
+      - /home/tacio/dados/volumes/mssql:/var/opt/mssql
+    ports:
+      - '11433:1433'  # Mapeia a porta 1433 do SQL Server (dentro do container) para a porta 11433 na máquina local
+    expose:
+      - 1433  # Expõe a porta 1433 internamente, útil para comunicação entre containers
+
+# Remover a especificação de versão se você não precisar dela
